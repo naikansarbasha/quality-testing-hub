@@ -76,24 +76,23 @@ body {
 
 /* Hero Section */
 .hero {
-    height: 100vh;
     background: linear-gradient(135deg, #2c3e50, #3498db);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
     color: #fff;
-    padding: 0 1rem;
+    padding: 4rem 0;
+    text-align: center;
 }
 
-.hero-content h1 {
-    font-size: 3rem;
+.hero h1 {
+    font-size: 2.5rem;
     margin-bottom: 1rem;
 }
 
-.hero-content p {
+.hero p {
     font-size: 1.2rem;
     margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .cta-button {
@@ -161,20 +160,19 @@ body {
     color: #2c3e50;
 }
 
-.tools-grid {
+.tool-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 2rem 0;
 }
 
 .tool-card {
-    text-align: center;
-    padding: 2rem;
     background-color: #fff;
+    padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
     transition: transform 0.3s ease;
 }
 
