@@ -13,20 +13,22 @@
     </script>
 </head>
 <body>
-    <!-- Header Section -->
-    <header class="header">
+    <!-- Header -->
+    <header>
         <nav class="navbar">
             <div class="logo">
-                <h1>QA Secure Labs</h1>
+                <a href="#home">
+                    <img src="images/logo.png" alt="QA Secure Labs Logo">
+                    <h1>QA Secure Labs</h1>
+                </a>
             </div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#tools">Testing Tools</a></li>
-                <li><a href="#resources">Resources</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="hamburger">
+            <div class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="#services">Services</a>
+                <a href="#tools">Tools</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="mobile-menu-btn">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -35,10 +37,10 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section id="home" class="hero">
         <div class="hero-content">
             <div class="hero-text">
-                <h1>✅ Ensure Quality ✅ Automate Testing ✅ Deliver Excellence</h1>
+                <h1>✅ Ensure Quality. ✅ Automate Testing. ✅ Deliver Excellence.</h1>
                 <p>At QA Secure Labs, we provide top-notch software testing solutions to ensure your applications are flawless, secure, and high-performing. From manual testing to advanced automation, we help you achieve the highest quality standards with open-source and cutting-edge testing tools.</p>
                 <div class="hero-buttons">
                     <a href="#services" class="cta-button secondary">Explore Our Services</a>

@@ -71,39 +71,54 @@ document.querySelectorAll('.service-card, .tool-card, .resource-card').forEach(c
     observer.observe(card);
 });
 
-// Header Scroll Effect - Modified to keep header always visible
-const header = document.querySelector('.header');
-let lastScroll = 0;
+// Header scroll effect
+const header = document.querySelector('header');
+const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
 
 window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll <= 0) {
-        header.classList.remove('scroll-up');
-        return;
-    }
-    
-    // Only add shadow when scrolling down
-    if (currentScroll > lastScroll) {
-        header.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)';
+    if (window.scrollY > 50) {
+        header.classList.add('scrolled');
     } else {
-        header.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)';
+        header.classList.remove('scrolled');
     }
-    
-    lastScroll = currentScroll;
 });
 
-// Remove the CSS that hides the header
-const style = document.createElement('style');
-style.textContent = `
-    .header {
-        transition: box-shadow 0.3s ease-in-out;
+// Mobile menu toggle
+mobileMenuBtn.addEventListener('click', () => {
+    mobileMenuBtn.classList.toggle('active');
+    navLinks.classList.toggle('active');
+});
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        mobileMenuBtn.classList.remove('active');
+        navLinks.classList.remove('active');
     }
-    .header.scroll-up {
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-`;
-document.head.appendChild(style);
+});
+
+// Active link highlighting
+const sections = document.querySelectorAll('section');
+const navItems = document.querySelectorAll('.nav-links a');
+
+window.addEventListener('scroll', () => {
+    let current = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop - 60) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href').slice(1) === current) {
+            item.classList.add('active');
+        }
+    });
+});
 
 // Tool Card Hover Effect
 document.querySelectorAll('.tool-card').forEach(card => {
