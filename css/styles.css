@@ -168,14 +168,12 @@ body {
 }
 
 .tool-card {
-    background: #fff;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.3s ease;
-    width: 120px;
-    margin: 0.5rem;
 }
 
 .tool-card:hover {
@@ -184,9 +182,10 @@ body {
 }
 
 .tool-logo {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 0.5rem;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 1rem;
     transition: transform 0.3s ease;
 }
 
@@ -195,15 +194,14 @@ body {
 }
 
 .tool-card h3 {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    color: #333;
+    color: #2c3e50;
+    margin: 1rem 0;
 }
 
 .tool-card p {
-    margin: 0;
-    font-size: 0.8rem;
     color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
 }
 
 /* Resources Section */
