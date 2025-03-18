@@ -96,7 +96,7 @@ body {
 }
 
 .hero h1 {
-    font-size: 3rem;
+    font-size: 1.8rem;
     margin-bottom: 1.5rem;
     line-height: 1.2;
     animation: fadeInDown 1s ease-out;
