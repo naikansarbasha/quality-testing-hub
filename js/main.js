@@ -35,12 +35,13 @@ const messageInput = document.getElementById('message');
 
 // Initially disable the submit button
 submitBtn.disabled = true;
+submitBtn.classList.remove('active');  // Ensure button starts in disabled state
 
 // Function to check if all required fields are filled
 function checkFormValidity() {
-    const isNameValid = nameInput.value.trim() !== '';
-    const isEmailValid = emailInput.value.trim() !== '';
-    const isMessageValid = messageInput.value.trim() !== '';
+    const isNameValid = nameInput.value.trim().length > 0;
+    const isEmailValid = emailInput.value.trim().length > 0;
+    const isMessageValid = messageInput.value.trim().length > 0;
     
     if (isNameValid && isEmailValid && isMessageValid) {
         submitBtn.disabled = false;
@@ -55,6 +56,9 @@ function checkFormValidity() {
 nameInput.addEventListener('input', checkFormValidity);
 emailInput.addEventListener('input', checkFormValidity);
 messageInput.addEventListener('input', checkFormValidity);
+
+// Run initial check in case fields are pre-filled
+checkFormValidity();
 
 contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -72,10 +76,10 @@ contactForm.addEventListener('submit', async (e) => {
     
     try {
         const formData = {
-            name: nameInput.value,
-            email: emailInput.value,
-            subject: document.getElementById('subject')?.value || 'Contact Form Submission',
-            message: messageInput.value
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            subject: document.getElementById('subject')?.value?.trim() || 'Contact Form Submission',
+            message: messageInput.value.trim()
         };
 
         const response = await fetch('http://localhost:5000/send-email', {
