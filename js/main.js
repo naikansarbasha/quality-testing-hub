@@ -26,27 +26,85 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Form Submission
-const contactForm = document.querySelector('.contact-form');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form data
-        const formData = new FormData(this);
-        const formObject = {};
-        formData.forEach((value, key) => {
-            formObject[key] = value;
+// Contact Form Handling
+const contactForm = document.getElementById('contactForm');
+const submitBtn = contactForm.querySelector('.submit-btn');
+const requiredFields = contactForm.querySelectorAll('input[required], textarea[required]');
+
+// Initially disable the submit button
+submitBtn.disabled = true;
+submitBtn.classList.add('disabled');
+
+// Function to check if all required fields are filled
+function checkFormValidity() {
+    let isValid = true;
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            isValid = false;
+        }
+    });
+    
+    if (isValid) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('disabled');
+        submitBtn.classList.add('active');
+    } else {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('disabled');
+        submitBtn.classList.remove('active');
+    }
+}
+
+// Add input event listener to all required fields
+requiredFields.forEach(field => {
+    field.addEventListener('input', checkFormValidity);
+});
+
+contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.classList.add('disabled');
+    submitBtn.textContent = 'Sending...';
+    
+    try {
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            subject: document.getElementById('subject').value,
+            message: document.getElementById('message').value
+        };
+
+        const response = await fetch('http://localhost:5000/send-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
         });
 
-        // Here you would typically send the form data to a server
-        console.log('Form submitted:', formObject);
-        
-        // Show success message
-        alert('Thank you for your message! We will get back to you soon.');
-        this.reset();
-    });
-}
+        const data = await response.json();
+
+        if (response.ok) {
+            // Show success message
+            alert('Message sent successfully! We will get back to you soon.');
+            contactForm.reset();
+            submitBtn.classList.remove('active');
+            submitBtn.classList.add('disabled');
+        } else {
+            throw new Error(data.error || 'Failed to send message');
+        }
+    } catch (error) {
+        // Show error message
+        alert('Sorry, there was an error sending your message. Please try again later.');
+        console.error('Error:', error);
+    } finally {
+        // Re-enable submit button
+        checkFormValidity();
+        submitBtn.textContent = 'Send Message';
+    }
+});
 
 // Scroll Animation for Elements
 const observerOptions = {
