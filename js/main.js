@@ -35,7 +35,6 @@ const messageInput = document.getElementById('message');
 
 // Initially disable the submit button
 submitBtn.disabled = true;
-submitBtn.classList.add('disabled');
 
 // Function to check if all required fields are filled
 function checkFormValidity() {
@@ -45,11 +44,9 @@ function checkFormValidity() {
     
     if (isNameValid && isEmailValid && isMessageValid) {
         submitBtn.disabled = false;
-        submitBtn.classList.remove('disabled');
         submitBtn.classList.add('active');
     } else {
         submitBtn.disabled = true;
-        submitBtn.classList.add('disabled');
         submitBtn.classList.remove('active');
     }
 }
@@ -70,7 +67,7 @@ contactForm.addEventListener('submit', async (e) => {
     
     // Disable submit button and show loading state
     submitBtn.disabled = true;
-    submitBtn.classList.add('disabled');
+    submitBtn.classList.remove('active');
     submitBtn.textContent = 'Sending...';
     
     try {
@@ -96,7 +93,6 @@ contactForm.addEventListener('submit', async (e) => {
             alert('Message sent successfully! We will get back to you soon.');
             contactForm.reset();
             submitBtn.classList.remove('active');
-            submitBtn.classList.add('disabled');
         } else {
             throw new Error(data.error || 'Failed to send message');
         }
