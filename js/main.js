@@ -29,7 +29,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Contact Form Handling
 const contactForm = document.getElementById('contactForm');
 const submitBtn = contactForm.querySelector('.submit-btn');
-const requiredFields = contactForm.querySelectorAll('input[required], textarea[required]');
+const nameInput = document.getElementById('name');
+const emailInput = document.getElementById('email');
+const messageInput = document.getElementById('message');
 
 // Initially disable the submit button
 submitBtn.disabled = true;
@@ -37,14 +39,11 @@ submitBtn.classList.add('disabled');
 
 // Function to check if all required fields are filled
 function checkFormValidity() {
-    let isValid = true;
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            isValid = false;
-        }
-    });
+    const isNameValid = nameInput.value.trim() !== '';
+    const isEmailValid = emailInput.value.trim() !== '';
+    const isMessageValid = messageInput.value.trim() !== '';
     
-    if (isValid) {
+    if (isNameValid && isEmailValid && isMessageValid) {
         submitBtn.disabled = false;
         submitBtn.classList.remove('disabled');
         submitBtn.classList.add('active');
@@ -55,13 +54,19 @@ function checkFormValidity() {
     }
 }
 
-// Add input event listener to all required fields
-requiredFields.forEach(field => {
-    field.addEventListener('input', checkFormValidity);
-});
+// Add input event listener to required fields
+nameInput.addEventListener('input', checkFormValidity);
+emailInput.addEventListener('input', checkFormValidity);
+messageInput.addEventListener('input', checkFormValidity);
 
 contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Double check if all fields are filled
+    if (!nameInput.value.trim() || !emailInput.value.trim() || !messageInput.value.trim()) {
+        alert('Please fill in all required fields.');
+        return;
+    }
     
     // Disable submit button and show loading state
     submitBtn.disabled = true;
@@ -70,10 +75,10 @@ contactForm.addEventListener('submit', async (e) => {
     
     try {
         const formData = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            subject: document.getElementById('subject').value,
-            message: document.getElementById('message').value
+            name: nameInput.value,
+            email: emailInput.value,
+            subject: document.getElementById('subject')?.value || 'Contact Form Submission',
+            message: messageInput.value
         };
 
         const response = await fetch('http://localhost:5000/send-email', {
@@ -100,7 +105,7 @@ contactForm.addEventListener('submit', async (e) => {
         alert('Sorry, there was an error sending your message. Please try again later.');
         console.error('Error:', error);
     } finally {
-        // Re-enable submit button
+        // Re-enable submit button if form is still filled
         checkFormValidity();
         submitBtn.textContent = 'Send Message';
     }
