@@ -28,86 +28,139 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Contact Form Handling
 const contactForm = document.getElementById('contactForm');
-const submitBtn = contactForm.querySelector('.submit-btn');
-const nameInput = document.getElementById('name');
+const submitBtn = document.querySelector('.submit-btn');
 const emailInput = document.getElementById('email');
 const messageInput = document.getElementById('message');
 
-// Initially disable the submit button
-submitBtn.disabled = true;
-submitBtn.classList.remove('active');  // Ensure button starts in disabled state
+// Function to validate email format
+function isValidEmail(email) {
+    return email.includes('@') && email.includes('.');
+}
 
 // Function to check if all required fields are filled
 function checkFormValidity() {
-    const isNameValid = nameInput.value.trim().length > 0;
-    const isEmailValid = emailInput.value.trim().length > 0;
-    const isMessageValid = messageInput.value.trim().length > 0;
+    const email = emailInput.value.trim();
+    const message = messageInput.value.trim();
     
-    if (isNameValid && isEmailValid && isMessageValid) {
-        submitBtn.disabled = false;
-        submitBtn.classList.add('active');
-    } else {
-        submitBtn.disabled = true;
-        submitBtn.classList.remove('active');
-    }
+    // Enable button if both fields are filled and email is valid
+    submitBtn.disabled = !(email && message && isValidEmail(email));
 }
 
-// Add input event listener to required fields
-nameInput.addEventListener('input', checkFormValidity);
+// Add input event listeners to required fields
 emailInput.addEventListener('input', checkFormValidity);
 messageInput.addEventListener('input', checkFormValidity);
 
-// Run initial check in case fields are pre-filled
-checkFormValidity();
+// Initialize form state
+document.addEventListener('DOMContentLoaded', () => {
+    submitBtn.disabled = true;
+});
 
-contactForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+// Function to show popup
+function showPopup(message) {
+    console.log('showPopup called with message:', message);  // Debug log
+    // Remove any existing popup
+    const existingPopup = document.querySelector('.popup-overlay');
+    if (existingPopup) {
+        console.log('Existing popup found, removing it.');  // Debug log
+        existingPopup.remove();
+    }
+
+    // Create popup elements
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
     
-    // Double check if all fields are filled
-    if (!nameInput.value.trim() || !emailInput.value.trim() || !messageInput.value.trim()) {
-        alert('Please fill in all required fields.');
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'popup-message';
+    messageDiv.textContent = message;
+    
+    const okButton = document.createElement('button');
+    okButton.className = 'popup-button';
+    okButton.textContent = 'OK';
+    
+    // Assemble popup
+    popup.appendChild(messageDiv);
+    popup.appendChild(okButton);
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    console.log('Popup elements created and added to the DOM.');  // Debug log
+    
+    // Show popup
+    requestAnimationFrame(() => {
+        overlay.classList.add('active');
+        console.log('Popup should now be visible.');  // Debug log
+    });
+    
+    // Handle OK button click
+    okButton.addEventListener('click', () => {
+        console.log('OK button clicked, closing popup.');  // Debug log
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            overlay.remove();
+        }, 300);
+    });
+
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            console.log('Overlay clicked, closing popup.');  // Debug log
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.remove();
+            }, 300);
+        }
+    });
+}
+
+// Handle form submission
+contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();  // Prevent form submission
+    
+    const email = emailInput.value.trim();
+    const message = messageInput.value.trim();
+    
+    // Validate fields
+    if (!email || !message) {
+        showPopup('Please fill in both email and message fields.');
         return;
     }
     
-    // Disable submit button and show loading state
+    if (!isValidEmail(email)) {
+        showPopup('Please enter a valid email address.');
+        return;
+    }
+    
+    // Show loading state
     submitBtn.disabled = true;
-    submitBtn.classList.remove('active');
     submitBtn.textContent = 'Sending...';
     
     try {
-        const formData = {
-            name: nameInput.value.trim(),
-            email: emailInput.value.trim(),
-            subject: document.getElementById('subject')?.value?.trim() || 'Contact Form Submission',
-            message: messageInput.value.trim()
-        };
-
-        const response = await fetch('http://localhost:5000/send-email', {
+        const response = await fetch('http://localhost:8000/send-email', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({
+                email: email,
+                subject: document.getElementById('subject')?.value?.trim() || 'Contact Form Submission',
+                message: message
+            }),
         });
 
-        const data = await response.json();
-
         if (response.ok) {
-            // Show success message
-            alert('Message sent successfully! We will get back to you soon.');
+            showPopup('Your Query has been sent successfully. Our Team will review and get back to you. Thank you!');
             contactForm.reset();
-            submitBtn.classList.remove('active');
         } else {
-            throw new Error(data.error || 'Failed to send message');
+            showPopup('Sorry, there was an error sending your message. Please try again later.');
         }
     } catch (error) {
-        // Show error message
-        alert('Sorry, there was an error sending your message. Please try again later.');
         console.error('Error:', error);
+        showPopup('Sorry, there was an error sending your message. Please try again later.');
     } finally {
-        // Re-enable submit button if form is still filled
+        submitBtn.textContent = 'Send Query';
         checkFormValidity();
-        submitBtn.textContent = 'Send Message';
     }
 });
 
