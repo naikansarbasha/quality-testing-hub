@@ -57,11 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Function to show popup
 function showPopup(message) {
-    console.log('showPopup called with message:', message);  // Debug log
     // Remove any existing popup
     const existingPopup = document.querySelector('.popup-overlay');
     if (existingPopup) {
-        console.log('Existing popup found, removing it.');  // Debug log
         existingPopup.remove();
     }
 
@@ -72,30 +70,46 @@ function showPopup(message) {
     const popup = document.createElement('div');
     popup.className = 'popup';
     
+    // Add success icon
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'popup-icon';
+    iconDiv.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+    `;
+    
+    // Add title
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'popup-title';
+    titleDiv.textContent = 'Query Submitted';
+    
+    // Add message
     const messageDiv = document.createElement('div');
     messageDiv.className = 'popup-message';
     messageDiv.textContent = message;
     
+    // Add OK button
     const okButton = document.createElement('button');
     okButton.className = 'popup-button';
     okButton.textContent = 'OK';
     
     // Assemble popup
+    popup.appendChild(iconDiv);
+    popup.appendChild(titleDiv);
     popup.appendChild(messageDiv);
     popup.appendChild(okButton);
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
-    console.log('Popup elements created and added to the DOM.');  // Debug log
     
-    // Show popup
+    // Show popup with animation
     requestAnimationFrame(() => {
         overlay.classList.add('active');
-        console.log('Popup should now be visible.');  // Debug log
     });
     
     // Handle OK button click
     okButton.addEventListener('click', () => {
-        console.log('OK button clicked, closing popup.');  // Debug log
         overlay.classList.remove('active');
         setTimeout(() => {
             overlay.remove();
@@ -105,7 +119,6 @@ function showPopup(message) {
     // Close on overlay click
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
-            console.log('Overlay clicked, closing popup.');  // Debug log
             overlay.classList.remove('active');
             setTimeout(() => {
                 overlay.remove();
