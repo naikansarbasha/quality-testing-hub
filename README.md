@@ -1,4 +1,4 @@
-# Quality Testing Hub Website
+# QA Secure Labs Website
 
 A modern, responsive website for a software testing and quality assurance company. This website showcases testing services, tools, and resources while providing a platform for potential clients to get in touch.
 
@@ -24,7 +24,7 @@ A modern, responsive website for a software testing and quality assurance compan
 ## Project Structure
 
 ```
-quality-testing-website/
+qa-secure-labs/
 ├── index.html
 ├── css/
 │   └── styles.css
@@ -44,13 +44,13 @@ quality-testing-website/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/quality-testing-website.git
+   git clone https://github.com/yourusername/qa-secure-labs.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd quality-testing-website
+   cd qa-secure-labs
    ```
 
 3. Open `index.html` in your web browser or use a local server:
@@ -107,4 +107,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Contact
 
 Your Name - your.email@example.com
-Project Link: https://github.com/yourusername/quality-testing-website
+Project Link: https://github.com/yourusername/qa-secure-labs

@@ -34,7 +34,8 @@ const messageInput = document.getElementById('message');
 
 // Function to validate email format
 function isValidEmail(email) {
-    return email.includes('@') && email.includes('.');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
 }
 
 // Function to check if all required fields are filled
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Function to show popup
-function showPopup(message) {
+function showPopup(message, isError = false) {
     // Remove any existing popup
     const existingPopup = document.querySelector('.popup-overlay');
     if (existingPopup) {
@@ -70,20 +71,24 @@ function showPopup(message) {
     const popup = document.createElement('div');
     popup.className = 'popup';
     
-    // Add success icon
+    // Add icon based on status
     const iconDiv = document.createElement('div');
     iconDiv.className = 'popup-icon';
-    iconDiv.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    iconDiv.innerHTML = isError 
+        ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+           </svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-    `;
+           </svg>`;
     
     // Add title
     const titleDiv = document.createElement('div');
     titleDiv.className = 'popup-title';
-    titleDiv.textContent = 'Query Submitted';
+    titleDiv.textContent = isError ? 'Error' : 'Success';
     
     // Add message
     const messageDiv = document.createElement('div');
@@ -136,18 +141,21 @@ contactForm.addEventListener('submit', async (e) => {
     
     // Validate fields
     if (!email || !message) {
-        showPopup('Please fill in both email and message fields.');
+        showPopup('Please fill in both email and message fields.', true);
         return;
     }
     
     if (!isValidEmail(email)) {
-        showPopup('Please enter a valid email address.');
+        showPopup('Please enter a valid email address.', true);
         return;
     }
     
     // Show loading state
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending...';
+    
+    const name = document.getElementById('name')?.value?.trim() || 'Anonymous';
+    const subject = document.getElementById('subject')?.value?.trim() || 'Contact Form Submission';
     
     try {
         const response = await fetch('http://localhost:5000/send-email', {
@@ -156,21 +164,25 @@ contactForm.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                email: email,
-                subject: document.getElementById('subject')?.value?.trim() || 'Contact Form Submission',
-                message: message
+                name,
+                email,
+                subject,
+                message
             }),
         });
 
+        const responseData = await response.json();
+
         if (response.ok) {
-            showPopup('Your Query has been sent successfully. Our Team will review and get back to you. Thank you!');
+            showPopup('Your message has been sent successfully. Our team will review and get back to you shortly. Thank you!');
             contactForm.reset();
         } else {
-            showPopup('Sorry, there was an error sending your message. Please try again later.');
+            console.error('Error from server:', responseData.error);
+            showPopup(`Sorry, there was an error sending your message: ${responseData.error || 'Unknown error'}`, true);
         }
     } catch (error) {
-        console.error('Error:', error);
-        showPopup('Sorry, there was an error sending your message. Please try again later.');
+        console.error('Network or parsing error:', error);
+        showPopup('Sorry, there was an error connecting to the server. Please try again later.', true);
     } finally {
         submitBtn.textContent = 'Send Query';
         checkFormValidity();

@@ -1,7 +1,7 @@
 {
   "name": "qa-secure-labs",
   "version": "1.0.0",
-  "description": "QA Secure Labs Website",
+  "description": "QA Secure Labs - Software Testing and Quality Assurance Services",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
